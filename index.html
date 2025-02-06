@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Hales Movie Library"/>
+
+  <title>Movies</title>
+
+  <script type="module" src="/static/js/main.js" async></script>
+
+  <link rel="stylesheet" href="/static/css/main.css"/>
+  <link rel="stylesheet" href="/static/css/posters.css"/>
+  <link rel="stylesheet" href="/static/css/modal.css"/>
+  <link rel="preconnect" href="https://docs.google.com">
+  <link rel="preconnect" href="https://image.tmdb.org">
+</head>
+<body>
+<div id="filter-modal" class="modal-wrapper hide">
+  <div class="modal-content">
+    <button class="modal-close-button" onclick="app.closeModal(this)">X</button>
+    <div class="modal-head">
+      <div>&copy; Riley Hales, 2025</div>
+      <div>Movie posters provided by <a href="https://tmdb.org" target="_blank" rel="noopener noreferrer">TMDb</a></div>
+    </div>
+
+    <div class="modal-body">
+      <div class="radio-group">
+        <div>Sort By:</div>
+        <input type="radio" id="sort-purchase" name="sort" value="purchase" onchange="app.populatePosters({sort: this.value})" checked>
+        <label for="sort-purchase">Purchase Date</label>
+        <input type="radio" id="sort-time" name="sort" value="time" onchange="app.populatePosters({sort: this.value})">
+        <label for="sort-time">Time</label>
+        <input type="radio" id="sort-year" name="sort" value="year" onchange="app.populatePosters({sort: this.value})">
+        <label for="sort-year">Release Year</label>
+        <input type="radio" id="sort-name" name="sort" value="name" onchange="app.populatePosters({sort: this.value})">
+        <label for="sort-name">Name</label>
+      </div>
+      <div class="radio-group">
+        <div>Poster Sizes:</div>
+        <input type="radio" id="xsmall" name="poster-size" value="xsmall" onchange="app.setPosterSizes(this.value)">
+        <label for="xsmall">XSmall</label>
+        <input type="radio" id="small" name="poster-size" value="small" onchange="app.setPosterSizes(this.value)">
+        <label for="small">Small</label>
+        <input type="radio" id="medium" name="poster-size" value="medium" onchange="app.setPosterSizes(this.value)" checked>
+        <label for="medium">Medium</label>
+        <input type="radio" id="large" name="poster-size" value="large" onchange="app.setPosterSizes(this.value)">
+        <label for="large">Large</label>
+        <input type="radio" id="xlarge" name="poster-size" value="xlarge" onchange="app.setPosterSizes(this.value)">
+        <label for="xlarge">XLarge</label>
+      </div>
+
+      <button class="modal-button" onclick="app.clearCache()">Clear Cache</button>
+    </div>
+  </div>
+</div>
+
+<div id="app">
+  <div id="upper">
+    <h1>Movies</h1>
+    <div style="position: relative; width: fit-content;">
+      <input id="search" type="text" placeholder="Search for a movie..." style="padding-right: 30px; width: 200px;"/>
+      <button id="clear" class="button" style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); border: none; background: none; cursor: pointer;" onclick="app.clearSearch()">X</button>
+    </div>
+    <div style="display: flex; justify-content: space-around; align-items: center">
+      <a id="sheets" target="_blank" class="button-link" href="https://docs.google.com/spreadsheets/d/1STMqN8zF0rUsskwK5FCGFrmLRy_rdLd900_blI-T49s/edit?usp=sharing">
+        <img src="/static/images/google-sheets.png" alt="google sheets logo" style="width: 100%; height: 100%;"/>
+      </a>
+      <div class="vertical-divider"></div>
+      <a id="youtube" target="_blank" class="button-link disabled">
+        <img src="/static/images/youtube.svg" alt="youtube logo" style="width: 100%; height: 100%;"/>
+      </a>
+      <a id="fandango" target="_blank" class="button-link disabled">
+        <img src="/static/images/fandango.png" alt="youtube logo" style="width: 100%; height: 100%;"/>
+      </a>
+      <a id="tmdb" target="_blank" class="button-link disabled">
+        <img src="/static/images/tmdb-square.svg" alt="tmdb logo" style="width: 100%; height: 100%;"/>
+      </a>
+      <div class="vertical-divider"></div>
+      <a id="filter" class="button-link" onclick="app.openModal('filter-modal')">
+        <img src="/static/images/icons8-filter-50.png" alt="filter icon" style="width: 100%; height: 100%;"/>
+      </a>
+    </div>
+  </div>
+  <div id="lower"></div>
+</div>
+</body>
+</html>

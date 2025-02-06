@@ -1,0 +1,61 @@
+.poster-div {
+    position: relative;
+    margin: 5px;
+    height: 300px;
+    width: 200px;
+    display: inline-flex;
+    opacity: 1;
+}
+
+.poster-div.disappear {
+    opacity: 0;
+    height: 0;
+    width: 0;
+    padding: 0;
+    margin: 0;
+    transition: all .2s ease-in;
+}
+
+.poster-div.hidden {
+    display: none;
+}
+
+.poster-img {
+    margin: 0;
+    flex-direction: column;
+    padding: 0;
+}
+
+.poster-title {
+    display: flex;
+    text-align: center;
+}
+
+.poster-title div {
+    flex-grow: 1;
+    height: 100%;
+    width: 0;
+    align-items: center;
+    display: block;
+}
+
+.poster-div:after {
+    content: attr(data-title);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 5%;
+    font-size: 2em;
+    transition: all .25s ease-in-out;
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0);
+    text-align: center;
+    align-content: center;
+}
+
+.poster-div:hover:after {
+    background: rgba(227, 252, 255, 0.9);
+    color: rgba(0, 0, 0, 1);
+}
