@@ -116,3 +116,9 @@ h1 {
 .time-text {
     margin: 0 10px;
 }
+
+.radio-group {
+    display: inline-flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}

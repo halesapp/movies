@@ -25,31 +25,73 @@
     </div>
 
     <div class="modal-body">
+      <strong>Sort By:</strong>
       <div class="radio-group">
-        <div>Sort By:</div>
-        <input type="radio" id="sort-purchase" name="sort" value="purchase" onchange="app.populatePosters({sort: this.value})" checked>
-        <label for="sort-purchase">Purchase Date</label>
-        <input type="radio" id="sort-time" name="sort" value="time" onchange="app.populatePosters({sort: this.value})">
-        <label for="sort-time">Time</label>
-        <input type="radio" id="sort-year" name="sort" value="year" onchange="app.populatePosters({sort: this.value})">
-        <label for="sort-year">Release Year</label>
-        <input type="radio" id="sort-name" name="sort" value="name" onchange="app.populatePosters({sort: this.value})">
-        <label for="sort-name">Name</label>
+        <div>
+          <input type="radio" id="sort-purchase" name="sort-property" value="purchase" onchange="app.populatePosters({sort: this.value})">
+          <label for="sort-purchase">Purchase Date</label>
+        </div>
+        <div>
+          <input type="radio" id="sort-time" name="sort-property" value="time" onchange="app.populatePosters({sort: this.value})">
+          <label for="sort-time">Time</label>
+        </div>
+        <div>
+          <input type="radio" id="sort-year" name="sort-property" value="year" onchange="app.populatePosters({sort: this.value})">
+          <label for="sort-year">Release Year</label>
+        </div>
+        <div>
+          <input type="radio" id="sort-name" name="sort-property" value="name" onchange="app.populatePosters({sort: this.value})">
+          <label for="sort-name">Name</label>
+        </div>
       </div>
+      <strong>Sort Order:</strong>
       <div class="radio-group">
-        <div>Poster Sizes:</div>
-        <input type="radio" id="xsmall" name="poster-size" value="xsmall" onchange="app.setPosterSizes(this.value)">
-        <label for="xsmall">XSmall</label>
-        <input type="radio" id="small" name="poster-size" value="small" onchange="app.setPosterSizes(this.value)">
-        <label for="small">Small</label>
-        <input type="radio" id="medium" name="poster-size" value="medium" onchange="app.setPosterSizes(this.value)" checked>
-        <label for="medium">Medium</label>
-        <input type="radio" id="large" name="poster-size" value="large" onchange="app.setPosterSizes(this.value)">
-        <label for="large">Large</label>
-        <input type="radio" id="xlarge" name="poster-size" value="xlarge" onchange="app.setPosterSizes(this.value)">
-        <label for="xlarge">XLarge</label>
+        <div>
+          <input type="radio" id="sort-asc" name="sort-order" value="asc" onchange="app.setSortOrder(this.value)" checked>
+          <label for="sort-asc">Ascending</label>
+        </div>
+        <div>
+          <input type="radio" id="sort-desc" name="sort-order" value="desc" onchange="app.setSortOrder(this.value)">
+          <label for="sort-desc">Descending</label>
+        </div>
       </div>
-
+      <div>
+        <label for="exclude-disc"><strong>Exclude Disc:</strong></label>
+        <input type="checkbox" id="exclude-disc" onchange="app.setExcludeDisc(this.checked)">
+      </div>
+      <strong>Poster Sizes:</strong>
+      <div class="radio-group">
+        <div>
+          <input type="radio" id="xsmall" name="poster-size" value="xsmall" onchange="app.setPosterSizes(this.value)">
+          <label for="xsmall">XSmall</label>
+        </div>
+        <div>
+          <input type="radio" id="small" name="poster-size" value="small" onchange="app.setPosterSizes(this.value)">
+          <label for="small">Small</label>
+        </div>
+        <div>
+          <input type="radio" id="medium" name="poster-size" value="medium" onchange="app.setPosterSizes(this.value)" checked>
+          <label for="medium">Medium</label>
+        </div>
+        <div>
+          <input type="radio" id="large" name="poster-size" value="large" onchange="app.setPosterSizes(this.value)">
+          <label for="large">Large</label>
+        </div>
+        <div><input type="radio" id="xlarge" name="poster-size" value="xlarge" onchange="app.setPosterSizes(this.value)">
+          <label for="xlarge">XLarge</label>
+        </div>
+      </div>
+      <strong>Poster Resolution:</strong>
+      <div class="radio-group">
+        <div>
+          <input type="radio" id="low" name="poster-resolution" value="low" onchange="app.setPosterResolution(this.value)" checked>
+          <label for="low">Low</label>
+        </div>
+        <div>
+          <input type="radio" id="high" name="poster-resolution" value="high" onchange="app.setPosterResolution(this.value)">
+          <label for="high">High</label>
+        </div>
+      </div>
       <button class="modal-button" onclick="app.clearCache()">Clear Cache</button>
     </div>
   </div>
@@ -59,8 +101,10 @@
   <div id="upper">
     <h1>Movies</h1>
     <div style="position: relative; width: fit-content;">
+      <label for="search" style="display: none">Search:</label>
       <input id="search" type="text" placeholder="Search for a movie..." style="padding-right: 30px; width: 200px;"/>
-      <button id="clear" class="button" style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); border: none; background: none; cursor: pointer;" onclick="app.clearSearch()">X</button>
+      <button id="clear" class="button" style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); border: none; background: none; cursor: pointer;" onclick="app.clearSearch()">X
+      </button>
     </div>
     <div style="display: flex; justify-content: space-around; align-items: center">
       <a id="sheets" target="_blank" class="button-link" href="https://docs.google.com/spreadsheets/d/1STMqN8zF0rUsskwK5FCGFrmLRy_rdLd900_blI-T49s/edit?usp=sharing">

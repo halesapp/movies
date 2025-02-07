@@ -10,6 +10,12 @@ const app = (() => {
   const search = document.getElementById('search')
   const lower = document.getElementById('lower')
 
+  // Constants
+  let posterResolution = 'low'
+  let dbSort = 'initial'
+  let sortOrder = 'asc'
+  let excludeDisc = false
+
   // Event listeners
   search.addEventListener('input', () => filterDatabase())
   search.addEventListener('change', () => filterDatabase())
@@ -63,7 +69,7 @@ const app = (() => {
     fandango.classList.add('disabled')
   }
 
-  const makePoster = movie => `<div class="poster-div" data-title="${movie.title}" onclick="app.clickPoster(this)"><img loading="lazy" alt="movie poster" class="poster-img" src="https://image.tmdb.org/t/p/w200/${movie.img}.jpg"/></div>`
+  const makePoster = movie => `<div class="poster-div" data-title="${movie.title}" onclick="app.clickPoster(this)"><img loading="lazy" alt="movie poster" class="poster-img" src="https://image.tmdb.org/t/p/w${posterResolution === 'low' ? 2 : 5}00/${movie.img}.jpg"/></div>`
   const makeGallery = db => `<div class="gallery">${db.map(movie => makePoster(movie)).join('')}</div>`
   const groupLabel = text => `<div class="group-label"><div class="horizontal-bar"></div><div class="label-text">${text}</div><div class="horizontal-bar"></div></div>`
 
@@ -89,15 +95,36 @@ const app = (() => {
           rule.style.height = dimensions[size] * 1.5 + "px"
           rule.style.fontSize = fontSizes[size] + "px"
         }
+        if (rule.selectorText === ".poster-img") {
+          rule.style.maxWidth = dimensions[size] + "px"
+        }
       }
     }
   }
 
+  const setPosterResolution = resolution => {
+    posterResolution = resolution
+    populatePosters({sort: dbSort})
+  }
+
+  const setExcludeDisc = exclude => {
+    excludeDisc = exclude
+    populatePosters({sort: dbSort})
+  }
+
+  const setSortOrder = order => {
+    sortOrder = order
+    populatePosters({sort: dbSort})
+  }
+
   const populatePosters = ({db, sort}) => {
     if (!db) db = DB
+    sort ? dbSort = sort : sort = dbSort  // assign or take the value of dbSort, depending on if sort was given
+    if (excludeDisc) db = db.filter(movie => movie.FandangoID || movie.YouTubeID)
     if (sort === 'time') {
       const maxTimeStart = Math.floor(Math.max(...db.map(movie => movie.time)) / 10 * 10)
       const timeIntervals = Array.from({length: maxTimeStart / 10 + 1}, (_, i) => i * 10)
+      if (sortOrder === 'desc') timeIntervals.reverse()
       lower.innerHTML = timeIntervals
         .map(time => {
           let filteredDb = db.filter(movie => movie.time >= time && movie.time < time + 10)
@@ -109,6 +136,7 @@ const app = (() => {
     if (sort === 'year') {
       db.sort((a, b) => a.Year - b.Year)
       const uniqueYears = [...new Set(db.map(movie => movie.Year))]
+      if (sortOrder === 'desc') uniqueYears.reverse()
       lower.innerHTML = uniqueYears
         .map(year => {
           let filteredDb = db.filter(movie => movie.Year === year)
@@ -119,9 +147,12 @@ const app = (() => {
     }
     if (sort === 'name') {
       db.sort((a, b) => a.title.localeCompare(b.title))
+      if (sortOrder === 'desc') db.reverse()
     }
     if (sort === 'purchase') {
       db.sort((a, b) => new Date(a.PurchaseDate) - new Date(b.PurchaseDate))
+      if (sortOrder === 'desc') db.reverse()
+      db.sort((a, b) => a.PurchaseDate === '' ? 1 : b.PurchaseDate === '' ? -1 : 0)
     }
     lower.innerHTML = makeGallery(db)
   }
@@ -149,7 +180,10 @@ const app = (() => {
       .catch(() => alert("Unable to retrieve Movie Database"))
   }
 
-  if (window.innerWidth < 600) {setPosterSizes('xsmall'); document.getElementById('xsmall').checked = true}
+  if (window.innerWidth < 600) {
+    setPosterSizes('xsmall');
+    document.getElementById('xsmall').checked = true
+  }
   fetchDataBase().then(db => populatePosters(db)).then(() => search.placeholder = `Search for a movie... (${DB.length})`)
 
   const clearCache = () => {
@@ -181,6 +215,9 @@ const app = (() => {
     clickPoster,
     populatePosters,
     setPosterSizes,
+    setPosterResolution,
+    setSortOrder,
+    setExcludeDisc,
     clearCache,
     closeModal,
     openModal,
