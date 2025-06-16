@@ -23,17 +23,6 @@ const app = (() => {
   const csvURI = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSWb4mFDqo7FZkh5ov5juVw8i06_BRmJ9RdSBn5NFSlAzj_QoMW9f_W-NBvOmOTSk2SMxKLugIvuk44/pub?gid=0&single=true&output=csv'
   const localStorageKey = 'db'
 
-  const csvStrToJSON = (csvString) => {
-    const arrayData = csvString.split('\r\n')
-    const labels = arrayData[0].split(",")
-    const regex = /"([^"]*)"|([^,]+)/
-    return arrayData.slice(1).map(row => {
-      const titleMatch = row.match(regex)
-      const rowData = [titleMatch[1] || titleMatch[2], ...row.replace(titleMatch[0], "").split(",").slice(1)]
-      return Object.fromEntries(labels.map((key, index) => [key, rowData[index]]))
-    });
-  }
-
   const filterDatabase = () => {
     const searchStr = search.value
     const regexString = RegExp(`.*(${searchStr.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')}).*`, "i")
@@ -65,8 +54,10 @@ const app = (() => {
   const clearButtons = () => {
     youtube.removeAttribute('href')
     fandango.removeAttribute('href')
+    tmdb.removeAttribute('href')
     youtube.classList.add('disabled')
     fandango.classList.add('disabled')
+    tmdb.classList.add('disabled')
   }
 
   const makePoster = movie => `<div class="poster-div" data-title="${movie.title}" onclick="app.clickPoster(this)"><img loading="lazy" alt="movie poster" class="poster-img" src="https://image.tmdb.org/t/p/w${posterResolution === 'low' ? 2 : 5}00/${movie.img}.jpg"/></div>`
@@ -157,7 +148,7 @@ const app = (() => {
     lower.innerHTML = makeGallery(db)
   }
 
-  const fetchDataBase = () => {
+  const fetchDataBase = async () => {
     if (localStorage.getItem(localStorageKey)) {
       const dbTimestamp = localStorage.getItem('dbTimestamp')
       if ((Date.now() - dbTimestamp < 5 * 24 * 60 * 60 * 1000)) {
@@ -168,16 +159,17 @@ const app = (() => {
         localStorage.removeItem('dbTimestamp')
       }
     }
-    return fetch(csvURI)
-      .then(res => res.text())
-      .then(csvData => csvStrToJSON(csvData))
-      .then(db => {
-        localStorage.setItem(localStorageKey, JSON.stringify(db))
-        localStorage.setItem('dbTimestamp', Date.now())
-        DB = db
-        return db
-      })
-      .catch(() => alert("Unable to retrieve Movie Database"))
+    const response = await fetch(csvURI);
+    const csvString = await response.text();
+    const parsed = Papa.parse(csvString, {
+      header: true,
+      skipEmptyLines: true,
+      dynamicTyping: true,
+    });
+    localStorage.setItem(localStorageKey, JSON.stringify(parsed.data))
+    localStorage.setItem('dbTimestamp', Date.now())
+    DB = parsed.data
+    return parsed.data
   }
 
   if (window.innerWidth < 600) {
